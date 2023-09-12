@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Req, Headers, SetMetadata } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req, Headers, SetMetadata, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
@@ -21,6 +21,14 @@ export class AuthController {
   @Post('login')
   loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
+  }
+
+  @Get('check-status')
+  @Auth()
+  checkAuthStatus(
+    @GetUser() user: User
+  ) {
+    return this.authService.checkAuthStatus(user);
   }
 
   // Authetication required
