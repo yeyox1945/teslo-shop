@@ -5,7 +5,7 @@ import { diskStorage } from 'multer';
 import { fileFilter, fileNamer } from './helpers';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Files - Get and Upload')
 @Controller('files')
@@ -37,6 +37,8 @@ export class FilesController {
       filename: fileNamer,
     })
   }))
+  @ApiResponse({ status: 201, description: 'Image uploaded succesfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   uploadProductImage(@UploadedFile() file: Express.Multer.File) {
 
     if (!file)
