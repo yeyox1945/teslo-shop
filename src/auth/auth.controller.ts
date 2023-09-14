@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Req, Headers, SetMetadata, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req, Headers, SetMetadata, Param, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
@@ -8,23 +8,33 @@ import { IncomingHttpHeaders } from 'http';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
 import { RoleProtected } from './decorators/role-protected.decorator';
 import { ValidRoles } from './interfaces';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('register')
+  @ApiResponse({ status: 201, description: 'User created successfully', type: User })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.authService.create(createUserDto);
   }
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, description: 'User logged in successfully', type: User })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
   }
 
   @Get('check-status')
   @Auth()
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'User token still active', type: User })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   checkAuthStatus(
     @GetUser() user: User
   ) {

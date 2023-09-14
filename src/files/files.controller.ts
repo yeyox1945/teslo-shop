@@ -5,7 +5,9 @@ import { diskStorage } from 'multer';
 import { fileFilter, fileNamer } from './helpers';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Files - Get and Upload')
 @Controller('files')
 export class FilesController {
   constructor(
@@ -14,6 +16,9 @@ export class FilesController {
   ) { }
 
   @Get('product/:imageName')
+  @ApiParam({ name: 'imageName', description: 'Image name to show', example: '7652426-00-A_0_2000.jpg' })
+  @ApiResponse({ status: 200, description: 'Image get successfully' })
+  @ApiResponse({ status: 404, description: 'Image not found' })
   findProductImage(
     @Res() res: Response, // Handle Response manually without Nest
     @Param('imageName') imageName: string
