@@ -8,6 +8,8 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   app.setGlobalPrefix('api');
 
+  // app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
